@@ -41,7 +41,7 @@ def copy_log(filepath = 'checkpoint'):
     filepath = os.path.join(filepath, 'log.txt')
     shutil.copyfile(filepath, os.path.join('log_backup.txt'))
 
-def save_model(state, checkpoint='checkpoint', filename='checkpoint.pth.tar'):
+def save_model(state, checkpoint='checkpoint', filename='checkpoint_dr.pth.tar'):
     filename = 'epoch'+str(state['epoch']) + filename
     filepath = os.path.join(checkpoint, filename)
     torch.save(state, filepath)

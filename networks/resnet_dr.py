@@ -92,10 +92,52 @@ class Bottleneck(nn.Module):
 
         return out
 
+BatchNorm = nn.BatchNorm2d
+
+class Bottleneck_dr(nn.Module):
+    expansion = 4
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None,
+                 dilation=(1, 1), residual=True):
+        super(Bottleneck_dr, self).__init__()
+        self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
+        self.bn1 = BatchNorm(planes)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
+                               padding=dilation[1], bias=False,
+                               dilation=dilation[1])
+        self.bn2 = BatchNorm(planes)
+        self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
+        self.bn3 = BatchNorm(planes * 4)
+        self.relu = nn.ReLU(inplace=True)
+        self.downsample = downsample
+        self.stride = stride
+
+    def forward(self, x):
+        residual = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.relu(out)
+
+        out = self.conv3(out)
+        out = self.bn3(out)
+
+        if self.downsample is not None:
+            residual = self.downsample(x)
+
+        out += residual
+        out = self.relu(out)
+
+        return out
+
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, num_classes=1000):
+    def __init__(self, block,block2,layers, num_classes=1000):
         self.inplanes = 64
         super(ResNet, self).__init__()
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
@@ -106,7 +148,7 @@ class ResNet(nn.Module):
         self.layer1 = self._make_layer(block, 64, layers[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer_dr(block, 512, layers[3], stride=1,dilation=[1,2,3])
+        self.layer4 = self._make_layer_dr(block2, 512, layers[3], stride=1,dilation=[1,2,3])
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -169,7 +211,7 @@ def resnet18(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
+    model = ResNet(BasicBlock,Bottleneck_dr, [2, 2, 2, 2], **kwargs)
     if pretrained:
         from collections import OrderedDict
         state_dict = model.state_dict()
@@ -187,7 +229,7 @@ def resnet34(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
+    model = ResNet(BasicBlock, Bottleneck_dr,[3, 4, 6, 3], **kwargs)
     if pretrained:
         from collections import OrderedDict
         state_dict = model.state_dict()
@@ -205,7 +247,7 @@ def resnet50(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
+    model = ResNet(Bottleneck,Bottleneck_dr, [3, 4, 6, 3], **kwargs)
     if pretrained:
         print('Initialize with pre-trained ResNet')
         from collections import OrderedDict
@@ -225,7 +267,7 @@ def resnet101(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
+    model = ResNet(Bottleneck,Bottleneck_dr, [3, 4, 23, 3], **kwargs)
     if pretrained:
         print('Initialize with pre-trained ResNet')
         from collections import OrderedDict
@@ -245,7 +287,7 @@ def resnet152(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
+    model = ResNet(Bottleneck, Bottleneck_dr,[3, 8, 36, 3], **kwargs)
     if pretrained:
         from collections import OrderedDict
         state_dict = model.state_dict()

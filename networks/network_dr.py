@@ -1,5 +1,5 @@
-from .resnet import *
-# from .resnet_dr import *
+# from .resnet import *
+from .resnet_dr import *
 import torch.nn as nn
 import torch
 from .globalNet import globalNet

@@ -19,7 +19,7 @@ from utils.evaluation import accuracy, AverageMeter, final_preds
 from utils.misc import save_model, adjust_learning_rate
 from utils.osutils import mkdir_p, isfile, isdir, join
 from utils.transforms import fliplr, flip_back
-from networks import network
+from networks import network_dr
 from dataloader.aliDataset import MscocoMulti
 
 os.environ['CUDA_VISIBLE_DEVICES']='3'
@@ -30,7 +30,7 @@ def main(args):
         mkdir_p(args.checkpoint)
 
     # create model
-    model = network.__dict__[cfg.model](cfg.output_shape, cfg.num_class, pretrained=True)
+    model = network_dr.__dict__[cfg.model](cfg.output_shape, cfg.num_class, pretrained=True)
     model = torch.nn.DataParallel(model).cuda()
 
     # define loss function (criterion) and optimizer
