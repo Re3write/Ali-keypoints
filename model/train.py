@@ -65,6 +65,8 @@ def main(args):
         batch_size=cfg.batch_size * args.num_gpus, shuffle=True,
         num_workers=args.workers, pin_memory=True)
 
+
+    trainRecordloss=1000000
     for epoch in range(args.start_epoch, args.epochs):
         lr = adjust_learning_rate(optimizer, epoch, cfg.lr_dec_epoch, cfg.lr_gamma)
         print('\nEpoch: %d | LR: %.8f' % (epoch + 1, lr))
@@ -72,6 +74,12 @@ def main(args):
         # train for one epoch
         train_loss = train(train_loader, model, [criterion1, criterion2], optimizer)
         print('train_loss: ', train_loss)
+        if train_loss<trainRecordloss:
+            trainRecordloss=train_loss
+        else:
+            for param_group in optimizer.param_groups:
+                param_group['lr'] *= 0.5
+
 
         # append logger file
         # logger.append([epoch + 1, lr, train_loss])
