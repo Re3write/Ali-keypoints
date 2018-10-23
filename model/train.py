@@ -80,7 +80,6 @@ def main(args):
             for param_group in optimizer.param_groups:
                 param_group['lr'] *= 0.5
 
-
         # append logger file
         # logger.append([epoch + 1, lr, train_loss])
 
