@@ -22,7 +22,7 @@ from utils.misc import save_model, adjust_learning_rate
 from utils.osutils import mkdir_p, isfile, isdir, join
 from utils.transforms import fliplr, flip_back
 from utils.imutils import im_to_numpy, im_to_torch
-from networks import network
+from networks import network_dr
 from dataloader.aliDataset import MscocoMulti
 from tqdm import tqdm
 import csv
@@ -31,7 +31,7 @@ from Evaluator import FaiKeypoint2018Evaluator
 
 def main(args):
     # create model
-    model = network.__dict__[cfg.model](cfg.output_shape, cfg.num_class, pretrained=False)
+    model = network_dr.__dict__[cfg.model](cfg.output_shape, cfg.num_class, pretrained=False)
     model = torch.nn.DataParallel(model).cuda()
 
     test_loader = torch.utils.data.DataLoader(
@@ -41,7 +41,7 @@ def main(args):
 
     # load trainning weights
     # checkpoint_file = os.path.join(args.checkpoint, args.test + '.pth.tar')
-    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch11checkpoint.pth.tar')
+    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch7checkpoint_dr.pth.tar')
     checkpoint = torch.load(checkpoint_file)
     model.load_state_dict(checkpoint['state_dict'])
     print("=> loaded checkpoint '{}' (epoch {})".format(checkpoint_file, checkpoint['epoch']))
@@ -139,12 +139,12 @@ def main(args):
     result_path = args.result
     if not isdir(result_path):
         mkdir_p(result_path)
-    result_file = os.path.join(result_path, 'result11.csv')
+    result_file = os.path.join(result_path, 'resultdr-7.csv')
     with open(result_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(full_result)
 
-    Evaluator = FaiKeypoint2018Evaluator(userAnswerFile=os.path.join(result_path, 'result11.csv'),
+    Evaluator = FaiKeypoint2018Evaluator(userAnswerFile=os.path.join(result_path, 'resultdr-7.csv'),
                                          standardAnswerFile="fashionAI_key_points_test_a_answer_20180426.csv")
     score = Evaluator.evaluate()
 
@@ -163,7 +163,7 @@ if __name__ == '__main__':
                         help='path to load checkpoint (default: checkpoint)')
     parser.add_argument('-f', '--flip', default=True, type=bool,
                         help='flip input image during test (default: True)')
-    parser.add_argument('-b', '--batch', default=32, type=int,
+    parser.add_argument('-b', '--batch', default=16, type=int,
                         help='test batch size (default: 128)')
     parser.add_argument('-t', '--test', default='CPN384x288', type=str,
                         help='using which checkpoint to be tested (default: CPN256x192')

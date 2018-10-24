@@ -134,6 +134,50 @@ class Bottleneck_dr(nn.Module):
 
         return out
 
+class conv_d(nn.Module):
+    expansion = 4
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None,
+                 dilation=(1, 1), residual=True):
+        super(conv_d, self).__init__()
+        self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
+        self.bn1 = BatchNorm(planes)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
+                               padding=dilation[1], bias=False,
+                               dilation=dilation[1])
+        self.bn2 = BatchNorm(planes)
+        self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
+        self.bn3 = BatchNorm(planes * 4)
+        self.relu = nn.ReLU(inplace=True)
+        self.downsample = downsample
+        self.stride = stride
+        self.shortcut=nn.Conv2d(inplanes,planes*4,kernel_size=1,stride=1,bias=False)
+        self.bn4=BatchNorm(planes*4)
+
+    def forward(self, x):
+        residual = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.relu(out)
+
+        out = self.conv3(out)
+        out = self.bn3(out)
+
+        residual=self.shortcut(residual)
+        residual=self.bn4(residual)
+        if self.downsample is not None:
+            residual = self.downsample(x)
+
+        out += residual
+        out = self.relu(out)
+
+        return out
+
 
 class ResNet(nn.Module):
 
@@ -148,7 +192,7 @@ class ResNet(nn.Module):
         self.layer1 = self._make_layer(block, 64, layers[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer_dr(block2, 512, layers[3], stride=1,dilation=[1,2,3])
+        self.layer4 = self._make_layer_dr(block2, 512, layers[3], stride=1,dilation=[2,3])
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -185,7 +229,7 @@ class ResNet(nn.Module):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
+        layers.append(block(self.inplanes, planes, stride, downsample,dilation=(1, 1)))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes,dilation=(dilation[i-1], dilation[i-1])))
@@ -247,7 +291,7 @@ def resnet50(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck,Bottleneck_dr, [3, 4, 6, 3], **kwargs)
+    model = ResNet(Bottleneck,Bottleneck_dr,[3, 4, 6, 3], **kwargs)
     if pretrained:
         print('Initialize with pre-trained ResNet')
         from collections import OrderedDict
