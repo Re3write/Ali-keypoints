@@ -191,8 +191,10 @@ class ResNet(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.layer1 = self._make_layer(block, 64, layers[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer_dr(block2, 512, layers[3], stride=1,dilation=[2,3])
+        self.layer3 = self._make_layer_dr(block2,256,layers[2],stride=1,dilation=[2,2,1,2,5,9])
+        # self.layer3 = self._make_layer_dr(block2, 256, layers[2], stride=1,dilation=[2,2,5,9,1,2,5,9,1,2,5,9,1,2,5,9,1,2,5,9,1,2,5])
+        self.layer4 = self._make_layer_dr(block2, 512, layers[3], stride=1,dilation=[5,9,17])
+        #5,9,17
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -229,10 +231,10 @@ class ResNet(nn.Module):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample,dilation=(1, 1)))
+        layers.append(block(self.inplanes, planes, stride, downsample,dilation=(dilation[0], dilation[0])))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes,dilation=(dilation[i-1], dilation[i-1])))
+            layers.append(block(self.inplanes, planes,dilation=(dilation[i], dilation[i])))
 
         return nn.Sequential(*layers)
 

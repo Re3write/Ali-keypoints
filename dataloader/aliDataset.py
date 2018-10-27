@@ -6,7 +6,7 @@ import math
 import cv2
 import skimage
 import skimage.transform
-from dataloader.tianchi_keypoint_dataset import get_tianchi_train_dataset,get_tianchi_test_dataset
+from dataloader.tianchi_keypoint_dataset import get_tianchi_train_dataset,get_tianchi_test_dataset,get_tianchi_test_dataset_new
 
 import torch
 import torch.utils.data as data
@@ -16,7 +16,7 @@ from utils.imutils import *
 from utils.transforms import *
 
 class MscocoMulti(data.Dataset):
-    def __init__(self, cfg, train=True):
+    def __init__(self, cfg, scale,train=True):
         self.is_train = train
         self.inp_res = cfg.data_shape
         self.out_res = cfg.output_shape
@@ -30,6 +30,8 @@ class MscocoMulti(data.Dataset):
             self.symmetry = cfg.symmetry
             self.datalist=get_tianchi_train_dataset()
         else:
+            self.scale=scale
+            # self.datalist=get_tianchi_test_dataset_new(self.scale)
             self.datalist=get_tianchi_test_dataset()
 
     def augmentationCropImage(self, img, bbox, joints=None):  

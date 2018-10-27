@@ -16,7 +16,7 @@ class ConfigAli:
 
     lr = 5e-4
     lr_gamma = 0.5
-    lr_dec_epoch = list(range(6,40,6))
+    lr_dec_epoch = list(range(5,40,5))
 
 
     batch_size = 12

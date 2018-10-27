@@ -16,6 +16,3 @@
 #             print(pic)
 #
 # print(len(final))
-import numpy as np
-a=np.zeros(shape=(72,))
-print(a)
