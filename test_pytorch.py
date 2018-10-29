@@ -41,7 +41,7 @@ def main(args):
 
     # load trainning weights
     # checkpoint_file = os.path.join(args.checkpoint, args.test + '.pth.tar')
-    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch10checkpoint_dr_newlr.pth.tar')
+    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch17checkpoint_dr_newlr.pth.tar')
     checkpoint = torch.load(checkpoint_file)
     model.load_state_dict(checkpoint['state_dict'])
     print("=> loaded checkpoint '{}' (epoch {})".format(checkpoint_file, checkpoint['epoch']))
@@ -139,12 +139,12 @@ def main(args):
     result_path = args.result
     if not isdir(result_path):
         mkdir_p(result_path)
-    result_file = os.path.join(result_path, 'result50_10_dr45.csv')
+    result_file = os.path.join(result_path, 'result50_17_dr45.csv')
     with open(result_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(full_result)
 
-    Evaluator = FaiKeypoint2018Evaluator(userAnswerFile=os.path.join(result_path, 'result50_10_dr45.csv'),
+    Evaluator = FaiKeypoint2018Evaluator(userAnswerFile=os.path.join(result_path, 'result50_17_dr45.csv'),
                                          standardAnswerFile="fashionAI_key_points_test_a_answer_20180426.csv")
     score = Evaluator.evaluate()
 
