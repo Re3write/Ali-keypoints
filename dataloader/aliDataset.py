@@ -29,10 +29,13 @@ class MscocoMulti(data.Dataset):
             self.rot_factor = cfg.rot_factor
             self.symmetry = cfg.symmetry
             self.datalist=get_tianchi_train_dataset()
+
+        elif scale==0:
+            self.datalist = get_tianchi_test_dataset()
         else:
             self.scale=scale
-            # self.datalist=get_tianchi_test_dataset_new(self.scale)
-            self.datalist=get_tianchi_test_dataset()
+            self.datalist=get_tianchi_test_dataset_new(self.scale)
+            # self.datalist=get_tianchi_test_dataset()
 
     def augmentationCropImage(self, img, bbox, joints=None):  
         height, width = self.inp_res[0], self.inp_res[1]

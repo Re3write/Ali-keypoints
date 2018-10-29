@@ -12,7 +12,7 @@ class ConfigAli:
     this_dir_name = cur_dir.split('/')[-1]
     root_dir = os.path.join(cur_dir, '..')
 
-    model = 'CPN50'
+    model = 'CPN101'
 
     lr = 5e-4
     lr_gamma = 0.5

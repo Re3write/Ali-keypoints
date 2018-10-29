@@ -39,7 +39,7 @@ def main(args):
 
     # load trainning weights
     # checkpoint_file = os.path.join(args.checkpoint, args.test + '.pth.tar')
-    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch13checkpoint_dr.pth.tar')
+    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch16checkpoint_dr_newlr.pth.tar')
     checkpoint = torch.load(checkpoint_file)
     model.load_state_dict(checkpoint['state_dict'])
     print("=> loaded checkpoint '{}' (epoch {})".format(checkpoint_file, checkpoint['epoch']))
@@ -156,7 +156,7 @@ def main(args):
                 tmp.append(line)
             locals()["tmp_res_" + str(scale)] = tmp
 
-    res_multi_file = hzx + "multiNEWGAME.csv"
+    res_multi_file = hzx + "multiNEWGAME_45.csv"
     with open(os.path.join(output_dir, res_multi_file), "w", newline="") as f:
         writer = csv.writer(f)
         for i in range(len(locals()["tmp_res_1"])):
@@ -210,5 +210,5 @@ if __name__ == '__main__':
                         help='using which checkpoint to be tested (default: CPN256x192')
     parser.add_argument('-r', '--result', default='result_mutil', type=str,
                         help='path to save save result (default: result)')
-    hzx='MutilresultNEWGAME_'
+    hzx='MutilresultNEWGAME45_'
     main(parser.parse_args())

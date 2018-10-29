@@ -174,7 +174,7 @@ if __name__ == '__main__':
                         help='path to save save result (default: result)')
     Log_file=[]
     for i in range(10,11):
-        checkpoint_file = os.path.join('model', 'checkpoint', 'epoch{}checkpoint_dr_newlr.pth.tar'.format(i))
+        checkpoint_file = os.path.join('model', 'checkpoint', 'epoch{}checkpoint_dr_101.pth.tar'.format(i))
         score=main(parser.parse_args(),checkpoint_file)
         # print(checkpoint_file)
 
