@@ -15,8 +15,9 @@ class ConfigAli:
     model = 'CPN101'
 
     lr = 5e-4
-    lr_gamma = 0.5
-    lr_dec_epoch = list(range(5,40,5))
+    lr_gamma = 0.2
+    # lr_dec_epoch = list(range(5,40,5))
+    lr_dec_epoch=[6,12,20,25,36]
 
 
     batch_size = 12

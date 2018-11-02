@@ -10,7 +10,7 @@ class globalNet(nn.Module):
         for i in range(len(channel_settings)):
             laterals.append(self._lateral(channel_settings[i]))
             predict.append(self._predict(output_shape, num_class))
-            if i != len(channel_settings) - 1 or i!=0:
+            if i != len(channel_settings) - 1 or i!=0 or i!=1:
                 upsamples.append(self._upsample())
         self.laterals = nn.ModuleList(laterals)
         self.upsamples = nn.ModuleList(upsamples)
@@ -66,9 +66,9 @@ class globalNet(nn.Module):
             else:
                 feature = self.laterals[i](x[i]) + up
             global_fms.append(feature)
-            if i != len(self.channel_settings) - 1 or i!=0:
-                up = self.upsamples[i-1](feature)
-            if i ==0:
+            if i != len(self.channel_settings) - 1 or i!=0 or i!=1:
+                up = self.upsamples[i-2](feature)
+            if i ==0 or i==1:
                 up =feature
             feature = self.predict[i](feature)
             global_outs.append(feature)
