@@ -16,3 +16,13 @@
 #             print(pic)
 #
 # print(len(final))
+
+import numpy as np
+from torch import nn
+import torch
+
+m = nn.AdaptiveAvgPool2d(1)
+input = torch.randn(4, 128, 17, 17)
+output = m(input).view(4,128).view(4,128,1,1)
+
+print(output.size())

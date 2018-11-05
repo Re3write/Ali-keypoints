@@ -39,7 +39,7 @@ def main(args):
 
     # load trainning weights
     # checkpoint_file = os.path.join(args.checkpoint, args.test + '.pth.tar')
-    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch16checkpoint_dr_newlr.pth.tar')
+    checkpoint_file = os.path.join('model', 'checkpoint', 'epoch13checkpoint_dr_101besST.pth.tar')
     checkpoint = torch.load(checkpoint_file)
     model.load_state_dict(checkpoint['state_dict'])
     print("=> loaded checkpoint '{}' (epoch {})".format(checkpoint_file, checkpoint['epoch']))
@@ -204,11 +204,11 @@ if __name__ == '__main__':
                         help='path to load checkpoint (default: checkpoint)')
     parser.add_argument('-f', '--flip', default=True, type=bool,
                         help='flip input image during test (default: True)')
-    parser.add_argument('-b', '--batch', default=4, type=int,
+    parser.add_argument('-b', '--batch', default=16, type=int,
                         help='test batch size (default: 128)')
     parser.add_argument('-t', '--test', default='CPN384x288', type=str,
                         help='using which checkpoint to be tested (default: CPN256x192')
     parser.add_argument('-r', '--result', default='result_mutil', type=str,
                         help='path to save save result (default: result)')
-    hzx='MutilresultNEWGAME45_'
+    hzx='Mutilresult45SE_'
     main(parser.parse_args())

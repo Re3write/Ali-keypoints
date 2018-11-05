@@ -27,7 +27,7 @@ import cv2
 import csv
 from Evaluator import FaiKeypoint2018Evaluator
 
-os.environ['CUDA_VISIBLE_DEVICES']='0,1,2'
+os.environ['CUDA_VISIBLE_DEVICES']='0,1,2,3'
 
 def main(args):
     # create checkpoint dir
@@ -37,7 +37,7 @@ def main(args):
 
     # create model
     model = network_dr.__dict__[cfg.model](cfg.output_shape, cfg.num_class, pretrained=True)
-    model = torch.nn.DataParallel(model,device_ids=[0,1,2]).cuda()
+    model = torch.nn.DataParallel(model,device_ids=[0,1,2,3]).cuda()
 
     # define loss function (criterion) and optimizer
     criterion1 = torch.nn.MSELoss().cuda()  # for Global loss
@@ -73,15 +73,14 @@ def main(args):
 
 
     trainRecordloss=1000000
-    log_file=[]
     for epoch in range(args.start_epoch, args.epochs):
         lr = adjust_learning_rate(optimizer, epoch, cfg.lr_dec_epoch, cfg.lr_gamma)
         print('\nEpoch: %d | LR: %.8f' % (epoch + 1, lr))
-
+        log_file = []
         # train for one epoch
         train_loss,score = train(train_loader, model, [criterion1, criterion2], optimizer,epoch)
         print('train_loss: ', train_loss)
-        if trainRecordloss-train_loss<0.3:
+        if trainRecordloss-train_loss<0.15:
            for param_group in optimizer.param_groups:
                param_group['lr'] *= 0.5
 
@@ -91,7 +90,7 @@ def main(args):
         # append logger file
         # logger.append([epoch + 1, lr, train_loss])
 
-        log_file.append([epoch,train_loss,score])
+        log_file.append([epoch,train_loss,score,lr])
         save_model({
             'epoch': epoch + 1,
             'state_dict': model.state_dict(),
@@ -267,12 +266,12 @@ def train(train_loader, model, criterions, optimizer,epoch):
     result_path = 'train_log'
     if not isdir(result_path):
         mkdir_p(result_path)
-    result_file = os.path.join(result_path, 'result101_{}_dr45.csv'.format(epoch))
+    result_file = os.path.join(result_path, 'result101_{}_dr45_se.csv'.format(epoch))
     with open(result_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(full_result)
 
-    Evaluator = FaiKeypoint2018Evaluator(userAnswerFile=os.path.join(result_path, 'result101_{}_dr45.csv'.format(epoch)),
+    Evaluator = FaiKeypoint2018Evaluator(userAnswerFile=os.path.join(result_path, 'result101_{}_dr45_se.csv'.format(epoch)),
                                          standardAnswerFile="fashionAI_key_points_test_a_answer_20180426.csv")
     score = Evaluator.evaluate()
 

@@ -168,12 +168,12 @@ def get_tianchi_test_dataset_new(scale=1):
     machine_name = platform.node()
     print(machine_name)
     if machine_name == "P100v0":
-        # dataset_dir = "/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_key_points_test_a_20180227/test"
+        dataset_dir = "/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_key_points_test_a_20180227/test"
         # ann_path = "./test_mini.csv"
-        # ann_path="/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_key_points_test_a_20180227/merge1.csv"
-        dataset_dir='/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_keypoints_test_20181019'
-        
-        ann_path='/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_keypoints_test_20181019/test.csv'
+        ann_path="/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_key_points_test_a_20180227/merge1.csv"
+        # dataset_dir='/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_keypoints_test_20181019'
+        #
+        # ann_path='/home/sk49/workspace/dataset/tianchi_clothes/fashionAI_keypoints_test_20181019/test.csv'
 
     elif machine_name == "Lenovo-PC":
         dataset_dir = r"./data/train_1"
@@ -212,19 +212,32 @@ def get_tianchi_test_dataset_new(scale=1):
             if scale == 1:
                 img_dict["bbox"] = [0, 0, w, h]
             elif scale == 0.9:
-                img_dict["bbox"] = [5, 5, w - 5, h - 5]
+                # img_dict["bbox"] = [5, 5, w - 5, h - 5]
+                img_dict["bbox"] = [10, 10, w - 20, h - 20]
             elif scale == 0.8:
-                img_dict["bbox"] = [10, 10, w - 10, h - 10]
+                # img_dict["bbox"] = [10, 10, w - 10, h - 10]
+                img_dict["bbox"] = [20, 20, w - 40, h - 40]
             elif scale == 0.7:
-                img_dict["bbox"] = [15, 15, w - 15, h - 15]
+                # img_dict["bbox"] = [15, 15, w - 15, h - 15]
+                img_dict["bbox"] = [30, 30, w - 60, h - 60]
             elif scale == 0.6:
-                img_dict["bbox"] = [20, 20, w - 20, h - 20]
+                # img_dict["bbox"] = [20, 20, w - 20, h - 20]
+                img_dict["bbox"] = [40, 40, w - 80, h - 80]
             elif scale == 0.5:
-                img_dict["bbox"] = [25, 25, w - 25, h - 25]
+                # img_dict["bbox"] = [25, 25, w - 25, h - 25]
+                img_dict["bbox"] = [50, 50, w - 100, h - 100]
             else:
                 print('error')
             img_dict["score"] = 1
             dataset.append(img_dict)
+
+            # img_dict["bbox"] = [0, 0, w, h]
+            # img_dict["bbox"] = [10, 10, w - 20, h - 20]
+            # img_dict["bbox"] = [20, 20, w - 40, h - 40]
+            # img_dict["bbox"] = [30, 30, w - 60, h - 60]
+            # img_dict["bbox"] = [40, 40, w - 80, h - 80]
+            # img_dict["bbox"] = [50, 50, w - 100, h - 100]
+
     print("load ends, total", time.time() - t0, "s")
 
     return dataset

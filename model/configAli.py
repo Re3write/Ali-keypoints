@@ -17,10 +17,10 @@ class ConfigAli:
     lr = 5e-4
     lr_gamma = 0.2
     # lr_dec_epoch = list(range(5,40,5))
-    lr_dec_epoch=[6,12,20,25,36]
+    lr_dec_epoch=[5,10,18,25,36]
 
 
-    batch_size = 12
+    batch_size = 16
     weight_decay = 1e-5
 
     num_class = 24
